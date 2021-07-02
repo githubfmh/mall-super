@@ -4,20 +4,24 @@
 			<div slot='center'>购物车</div>
 		</nav-bar>
 		
-		<home-swiper :banners='banners'></home-swiper>
-		
-		<recommend-view :recommends='recommends'></recommend-view>
-		
-		<feature-view></feature-view>
-		
-		<tab-control class='tab-control' :titles='["流行", "新款", "精选"]' @TabControlClick='TabClick'></tab-control>
-		
-		<goods-list :goods='showGoods'></goods-list>
+		<scroll class='content'>
+			<home-swiper :banners='banners'></home-swiper>
+			
+			<recommend-view :recommends='recommends'></recommend-view>
+			
+			<feature-view></feature-view>
+			
+			<tab-control class='tab-control' :titles='["流行", "新款", "精选"]' @TabControlClick='TabClick'></tab-control>
+			
+			<goods-list :goods='showGoods'></goods-list>
+		</scroll>
 	</div>
 </template>
 
 <script>
 import NavBar from 'components/common/navbar/NavBar'
+import Scroll from 'components/common/scroll/Scroll'
+
 import TabControl from 'components/content/tabControl/TabControl.vue'
 import GoodsList from 'components/content/goods/GoodsList.vue'
 
@@ -31,6 +35,7 @@ export default {
   name: 'Home',
 	components: {
 		NavBar,
+		Scroll,
 		TabControl,
 		GoodsList,
 		HomeSwiper,
@@ -99,8 +104,9 @@ export default {
 
 <style scoped>
 	#home {
-		/* height: 2000px; */
 		padding-top: 44px;
+		height: 100vh;
+		position: relative;
 	}
 	
 	.home-nav {
@@ -117,5 +123,14 @@ export default {
 		position: sticky;
 		top: 44px;
 		z-index: 9;
+	}
+	
+	.content {
+		overflow: hidden;
+		position: absolute;
+		top: 44px;
+		bottom: 49px;
+		left: 0;
+		right: 0;
 	}
 </style>
