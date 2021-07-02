@@ -4,7 +4,7 @@
 			<div slot='center'>购物车</div>
 		</nav-bar>
 		
-		<scroll class='content'>
+		<scroll class='content' ref='scroll' :probe-type='3' @scroll='contentScroll' :pull-up-load='true' @pullingUp='loadMore'>
 			<home-swiper :banners='banners'></home-swiper>
 			
 			<recommend-view :recommends='recommends'></recommend-view>
@@ -15,6 +15,8 @@
 			
 			<goods-list :goods='showGoods'></goods-list>
 		</scroll>
+	
+		<back-top @click.native='backClick' v-show='isShowBackTop'></back-top>
 	</div>
 </template>
 
@@ -24,6 +26,7 @@ import Scroll from 'components/common/scroll/Scroll'
 
 import TabControl from 'components/content/tabControl/TabControl.vue'
 import GoodsList from 'components/content/goods/GoodsList.vue'
+import BackTop from '../../components/content/backTop/BackTop.vue'
 
 import HomeSwiper from './childComps/HomeSwiper'
 import RecommendView from './childComps/RecommendView'	
@@ -38,6 +41,7 @@ export default {
 		Scroll,
 		TabControl,
 		GoodsList,
+		BackTop,
 		HomeSwiper,
 		RecommendView,
 		FeatureView
@@ -51,7 +55,8 @@ export default {
 				'new': {page: 0, list: []},
 				'sell': {page: 0, list: []},
 			},
-			currentType: 'pop'
+			currentType: 'pop',
+			isShowBackTop: false
 		}
 	},
 	created() {
@@ -82,6 +87,17 @@ export default {
 					break;
 			}
 		},
+		backClick: function() {
+			this.$refs.scroll.scrollTop(0, 0, 500)
+		},
+		contentScroll: function(position) {
+			// console.log(position)
+			this.isShowBackTop = (-position.y) > 1000
+		},
+		loadMore: function() {
+			console.log('上拉加载更多')
+			this.getHomeGoods(this.currentType)
+		},
 		// 网络请求相操作
 		getHomeMultidata: function() {
 			getHomeMultidata().then(res => {
@@ -96,6 +112,8 @@ export default {
 				// console.log(res)
 				this.goods[type].list.push(...res.data.list)
 				this.goods[type].page += 1
+				
+				this.$refs.scroll.finishPullUp()
 			})
 		}
 	}
