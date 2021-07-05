@@ -18,7 +18,7 @@ export default {
 		},
 		pullUpLoad: {
 			type: Boolean,
-			defalut: false
+			default: false
 		}
 	},
 	data() {
@@ -39,17 +39,24 @@ export default {
 			this.$emit('scroll', position)
 		})
 		
-		this.scroll.on('pullingUp', () => {
-			// console.log('OK完毕')
-			this.$emit('pullingUp')
-		})
+		if(this.pullUpLoad) {
+			this.scroll.on('pullingUp', () => {
+				this.$emit('pullingUp')
+			})
+		}
 	},
 	methods: {
-		scrollTop: function(x, y, time=1000) {
-			this.scroll.scrollTo(x, y, time)
+		scrollTo: function(x, y, time=1000) {
+			this.scroll && this.scroll.scrollTo(x, y, time)
 		},
 		finishPullUp: function() {
-			this.scroll.finishPullUp()
+			this.scroll && this.scroll.finishPullUp()
+		},
+		refresh() {
+			this.scroll && this.scroll.refresh()
+		},
+		getScrollY() {
+			return this.scroll ? this.scroll.y : 0
 		}
 	}
 }
