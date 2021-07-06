@@ -36,7 +36,7 @@ import FeatureView from './childComps/FeatureView.vue'
 
 import {getHomeMultidata, getHomeGoods} from 'network/home'
 import {debounce} from 'common/utils'
-
+import {itemListenerMixin} from 'common/mixin'
 export default {
   name: 'Home',
 	components: {
@@ -49,6 +49,7 @@ export default {
 		RecommendView,
 		FeatureView
 	},
+	mixins: [itemListenerMixin],
 	data() {
 		return {
 			banners: [],
@@ -73,8 +74,11 @@ export default {
 		this.$refs.scroll.refresh()
 	},
 	deactivated() {
+		// 1.保存Y值
 		this.saveY = this.$refs.scroll.getScrollY()
-		// console.log(this.saveY)
+		
+		// 2.取消全局事件的监听
+		this.$bus.$off('itemImgLoad', this.itemImagListener)
 	},
 	created() {
 		// 1. 请求多个数据
@@ -86,21 +90,25 @@ export default {
 		this.getHomeGoods('sell')
 		
 	},
-	mounted() {
-		// 1.图片加载完成的事件监听
-		const refresh = debounce(this.$refs.scroll.refresh, 50)
-		this.$bus.$on('itemImageLoad', () => {
-			refresh()
-		})
+	// mounted() {
+	// 	// 1.图片加载完成的事件监听
+	// 	const refresh = debounce(this.$refs.scroll.refresh, 50)
 		
-		// 2.获取tabControl的offsetTop
-		// 所有的组件都有一个属性$el, 用于获取组件中的元素
-		// console.log(this.$refs.tabControl.$el.offsetTop)
-	},
+	// 	//对监听的事件进行保存
+	// 	this.itemImagListener = () => {
+	// 		refresh()
+	// 	}
+	// 	this.$bus.$on('itemImageLoad', itemImagListener)
+		
+	// 	// 2.获取tabControl的offsetTop
+	// 	// 所有的组件都有一个属性$el, 用于获取组件中的元素
+	// 	// console.log(this.$refs.tabControl.$el.offsetTop)
+	// },
 	methods: {
 		TabClick: function(index) {
 			switch(index) {
 				case 0: 
+					this.currentType = 'pop'
 				case 1:
 					this.currentType = 'new'
 					break;
@@ -113,7 +121,7 @@ export default {
 			this.$refs.tabControl2.currentIndex = index;
 		},
 		backClick: function() {
-			this.$refs.scroll.scrollTop(0, 0, 500)
+			this.$refs.scroll.scrollTo(0, 0, 500)
 		},
 		contentScroll: function(position) {
 			// console.log(position)
