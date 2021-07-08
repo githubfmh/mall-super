@@ -18,7 +18,7 @@
 			<goods-list :goods='showGoods'></goods-list>
 		</scroll>
 	
-		<back-top @click.native='backClick' v-show='isShowBackTop'></back-top>
+		<back-top @click.native='backTop' v-show='isShowBackTop'></back-top>
 	</div>
 </template>
 
@@ -120,7 +120,7 @@ export default {
 			this.$refs.tabControl1.currentIndex = index;
 			this.$refs.tabControl2.currentIndex = index;
 		},
-		backClick: function() {
+		backTop: function() {
 			this.$refs.scroll.scrollTo(0, 0, 500)
 		},
 		contentScroll: function(position) {
