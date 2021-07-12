@@ -25,6 +25,8 @@
 		
 		<back-top @click.native='backTop' v-show='isShowBackTop'></back-top>
 		
+		<!-- <toast :message='message' :show='show'></toast> -->
+		
   </div>
 </template>
 
@@ -42,8 +44,13 @@ import Scroll from 'components/common/scroll/Scroll'
 import GoodsList from 'components/content/goods/GoodsList'
 
 import {getDetail, Goods, Shop, GoodsParams, getRecommend} from 'network/detail'
+
 import {debounce} from 'common/utils.js'
 import {itemListenerMixin, backTopMixin} from 'common/mixin'
+
+import {mapActions} from 'vuex' 
+
+// import Toast from 'components/common/toast/Toast.vue'
 
 export default {
   name: 'Detail',
@@ -57,7 +64,8 @@ export default {
 		DetailCommentInfo,
 		DetailBottomBar,
 		Scroll,
-		GoodsList
+		GoodsList,
+		// Toast
 	},
 	mixins: [itemListenerMixin, backTopMixin],
 	data() {
@@ -72,7 +80,9 @@ export default {
 			recommends: [],
 			themeTopYs: [],
 			getThemeTopY: null,
-			currentIndex: 0
+			currentIndex: 0,
+			// message: '',
+			// show: false
 		}
 	},
 	created() {
@@ -128,6 +138,9 @@ export default {
 		this.$bus.$off('itemImgLoad', this.itemImgListener)
 	},
 	methods: {
+		...mapActions(['addCart']),
+		
+		
 		imgLoad() {
 			this.$refs.scroll.refresh();
 			this.getThemeTopY();
@@ -164,10 +177,29 @@ export default {
 			product.price = this.goods.realPrice;
 			product.iid = this.iid;
 			
-			// 2.将商品添加到购物车
+			// 2.将商品添加到购物车(1.Promise 2.mapActions)
 			// this.$store.cartList.push(product)
 			// this.$store.commit('addCart', product)
-			this.$store.dispatch('addCart', product)
+			
+			// 普通使用
+			// this.$store.dispatch('addCart', product).then(res) => {
+			// 	console.log(res);
+			// }
+			
+			// 使用mapActions
+			this.addCart(product).then(res => {
+				//普通封装Toast
+				// this.show = true;
+				// this.message = res;
+				
+				// setTimeout(() => {
+				// 	this.show = false;
+				// 	this.message = ''
+				// }, 1000)
+				
+				
+				this.$toast.show(res, 1000)
+			})
 		}
 	}
 }
@@ -176,7 +208,7 @@ export default {
 <style scoped>
 	#detail {
 		position: relative;
-		z-index: 9;
+		z-index: 1;
 		background-color: #fff;
 		height: 100vh;
 	}

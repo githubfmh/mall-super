@@ -60,9 +60,9 @@ export default {
 	}
 	
 	.item-title, .item-desc {
-		oveflow: hidden;
+		overflow: hidden;
 		white-space: nowrap;
-		text-overflow: ellipsos;
+		text-overflow: ellipsis;
 	}
 	
 	.item-img {

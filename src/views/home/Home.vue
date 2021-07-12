@@ -35,8 +35,10 @@ import RecommendView from './childComps/RecommendView'
 import FeatureView from './childComps/FeatureView.vue'
 
 import {getHomeMultidata, getHomeGoods} from 'network/home'
+
 import {debounce} from 'common/utils'
 import {itemListenerMixin} from 'common/mixin'
+
 export default {
   name: 'Home',
 	components: {

@@ -1,7 +1,7 @@
 <template>
   <div class='bottom-bar'>
 		<div class='check-content'>
-			<check-button :is-checked='isSelectAll' class='check-button'></check-button>
+			<check-button :is-checked='isSelectAll' class='check-button' @click.native='checkClick'></check-button>
 			<span>全选</span>
 		</div>
 		
@@ -9,7 +9,7 @@
 			合计: {{totalPrice}}
 		</div>
 		
-		<div class='calclate'>
+		<div class='calclate' @click='calclate'>
 			去计算({{checkLength}})
 		</div>
 		
@@ -19,26 +19,56 @@
 <script>
 import checkButton from 'components/content/checkButton/CheckButton.vue'
 
+import {mapGetters} from 'vuex'
+
 export default {
   name: 'CartBottomBar',
 	components: {
 		checkButton
 	},
 	computed: {
+		...mapGetters(['cartList']),
 		totalPrice() {
-			return '￥' + this.$store.getters.cartList.filter(item => {
+			return '￥' + this.cartList.filter(item => {
 				return item.checked
 			}).reduce((preValue, item) => {
 				return preValue + item.price * item.count
 			}, 0).toFixed(2)
 		},
 		checkLength() {
-			return this.$store.state.cartList.filter(item => item.checked).length
+			return this.cartList.filter(item => item.checked).length
 		},
 		isSelectAll() {
+			if(this.cartList.length === 0 ) return false
+			// 使用find
+			return !this.cartList.find(item => !item.checked)
+			
+			// 使用filter
 			// return !(this.cartList.filter(item => !item.checked).length)
 			
-			return !this.cartList.find(item => !item.checked)
+			// 普通遍历
+			// let isChecked = false;
+			// for(let item of this.cartList) {
+			// 	if(!item.checked) {
+			// 		return false
+			// 	}
+			// }
+			// return true
+		}
+	},
+	methods: {
+		// 全选
+		checkClick() {
+			if(this.isSelectAll) { //全部选中
+				this.cartList.forEach(item => item.checked = false)
+			} else {  //部分或者全部不选中
+				this.cartList.forEach(item => item.checked = true)
+			}
+		},
+		calclate() {
+			if(!this.isSelectAll) {
+				this.$toast.show('请选择购买的商品', 2000)
+			}
 		}
 	}
 }
@@ -48,6 +78,7 @@ export default {
 	.bottom-bar {
 		position: relative;
 		display: flex;
+		
 		
 		height: 40px;
 		line-height: 40px;

@@ -1,5 +1,5 @@
 <template>
-  <div id='cart'>
+  <div class='cart'>
 		<!-- 导航 -->
 		<nav-bar class='nav-bar'>
 			<div slot='center'>购物车({{length}})</div>
@@ -16,6 +16,7 @@
 
 <script>
 import NavBar from 'components/common/navbar/NavBar.vue'
+
 import CartList from './childComps/CartList.vue'
 import CartBottomBar from './childComps/CartBottomBar'	
 
@@ -41,9 +42,9 @@ export default {
 }
 </script>
 
-<style>
-	#cart {
-		heigth: 100vh;
+<style scoped>
+	.cart {
+		height: 100vh;
 	}
 	
 	.nav-bar {
