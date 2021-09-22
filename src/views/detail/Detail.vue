@@ -88,10 +88,11 @@ export default {
 	created() {
 		// 1.保存传入的iid
 		this.iid = this.$route.params.iid
+		// console.log(this.$route)
 		
 		// 2. 根据iid请求详情数据
 		getDetail(this.iid).then(res => {
-			// console.log(res)
+			console.log(res)
 			// 1. 获取数据
 			const data = res.result;
 			
